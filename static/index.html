@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MindLog</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%233f7a6a'/%3E%3Ccircle cx='12' cy='20' r='6' fill='%23f3c5a8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6f3;--mist1:#dcede4;--mist2:#fdeadd;--mist3:#e5eaf7;
+  --card:#ffffff;--field:#fafcfb;--ink:#21332e;--text:#34433f;--muted:#66756f;--line:#e1e8e4;--tint:#e9f0ec;
+  --brand:#3f7a6a;--brand-700:#336558;--brand-soft:#d5e8e0;--on-brand:#ffffff;--accent:#d98f66;--accent-soft:#fbe3d3;
+  --danger:#bb4f44;--on-danger:#ffffff;
+  --notice-bg:#fdf3e9;--notice-line:#f1d9c2;--notice-text:#6f4e31;--crisis-bg:#fdf1ee;
+  --head:rgba(255,255,255,.74);--tip-bg:#21332e;--tip-text:#ffffff;
+  --joy:#e0a63a;--anxiety:#de8259;--sadness:#5b8fc9;--anger:#c4574c;--neutral:#9aa6a2;
+  --m1:#dc9a8f;--m2:#efc6a6;--m3:#dfe0cd;--m4:#a8cfba;--m5:#62a58c;
+  --shadow:0 1px 2px rgba(33,51,46,.04),0 14px 34px -18px rgba(33,51,46,.18);
+  --ease:cubic-bezier(.25,.6,.25,1);
+  --display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[data-theme=dark]{
+  --bg:#121a18;--mist1:#17322b;--mist2:#30231b;--mist3:#1b2132;
+  --card:#1a2422;--field:#151e1c;--ink:#e7f0ec;--text:#ccd8d3;--muted:#8fa09a;--line:#2a3734;--tint:#22302d;
+  --brand:#74b8a3;--brand-700:#8cc7b4;--brand-soft:#24403a;--on-brand:#0f1f1b;--accent:#e9a37c;--accent-soft:#3a2a20;
+  --danger:#e07c70;--on-danger:#2b1210;
+  --notice-bg:#2a231b;--notice-line:#4a3a28;--notice-text:#e8cfae;--crisis-bg:#2b1d1b;
+  --head:rgba(18,26,24,.74);--tip-bg:#e7f0ec;--tip-text:#14201d;
+  --m1:#b9756b;--m2:#c79c7c;--m3:#8a8d7b;--m4:#6fa48b;--m5:#59b596;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -18px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);background:var(--bg);font:16px/1.6 var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased;transition:background .3s var(--ease),color .3s var(--ease)}
+body::before{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none;
+  background:radial-gradient(42% 38% at 14% 8%,var(--mist1) 0%,transparent 70%),radial-gradient(40% 36% at 90% 4%,var(--mist2) 0%,transparent 70%),radial-gradient(46% 40% at 70% 96%,var(--mist3) 0%,transparent 70%);
+  animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1)}to{transform:scale(1.08) translateY(-1.5%)}}
+header{position:sticky;top:0;z-index:5;background:var(--head);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+header h1{font-family:var(--display);font-weight:700;font-size:22px;margin:0;letter-spacing:-.3px;color:var(--ink)}
+header h1 span{color:var(--brand)}
+nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto}
+nav button,.themebtn{background:none;border:0;color:var(--muted);padding:8px 13px;border-radius:999px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:background .18s var(--ease),color .18s var(--ease)}
+nav button:hover,.themebtn:hover{color:var(--ink);background:var(--tint)}
+nav button.on{background:var(--brand-soft);color:var(--ink)}
+.themebtn{border:1px solid var(--line);font-size:14px;padding:7px 13px}
+nav.hide+.themebtn{margin-left:auto}
+main{max-width:860px;margin:0 auto;padding:26px 16px 72px}
+main.enter{animation:enter .28s var(--ease) both}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:18px;box-shadow:var(--shadow);transition:background .3s var(--ease),border-color .3s var(--ease)}
+.hero{background:linear-gradient(135deg,var(--brand-soft),var(--accent-soft));border:0;padding:30px 26px}
+.hero p{max-width:56ch;margin:0;color:var(--text)}
+h2{font-family:var(--display);font-weight:700;color:var(--ink);font-size:27px;line-height:1.15;letter-spacing:-.4px;margin:0 0 12px}
+h3{font-family:var(--display);font-weight:600;color:var(--ink);font-size:17px;margin:0 0 10px}
+p{margin:0 0 10px}.muted{color:var(--muted);font-size:14px}.small{font-size:13px}
+label{display:block;font-weight:600;margin:16px 0 6px;color:var(--ink);font-size:14.5px}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;font:inherit;background:var(--field);color:var(--text);transition:border-color .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+textarea{min-height:160px;resize:vertical;line-height:1.6}
+button:focus-visible,.cell:focus-visible,.bar:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+button.btn{background:var(--brand);color:var(--on-brand);border:1.5px solid transparent;border-radius:999px;padding:11px 22px;font:inherit;font-weight:600;cursor:pointer;transition:transform .18s var(--ease),background .18s var(--ease),border-color .18s var(--ease)}
+button.btn:hover{background:var(--brand-700);transform:translateY(-1px)}
+button.btn:active{transform:none}
+button.btn:disabled{opacity:.5;cursor:default;transform:none}
+button.btn.ghost{background:transparent;color:var(--brand);border-color:var(--line)}
+button.btn.ghost:hover{border-color:var(--brand);background:var(--tint)}
+button.btn.danger{background:var(--danger);color:var(--on-danger)}
+button.link{background:none;border:0;padding:0;color:var(--brand);font:inherit;font-size:14px;cursor:pointer;text-decoration:underline}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.check{display:flex;gap:11px;align-items:flex-start;font-weight:400;margin:12px 0;color:var(--text)}
+.check input{margin-top:3px;width:19px;height:19px;flex:none;accent-color:var(--brand)}
+.pill{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;cursor:pointer;font:inherit;font-size:15px;color:var(--text);transition:border-color .18s var(--ease),background .18s var(--ease),color .18s var(--ease)}
+.pill:hover{border-color:var(--brand)}
+.pill.on{background:var(--brand-soft);color:var(--ink);border-color:var(--brand)}
+.faces{display:flex;gap:10px;flex-wrap:wrap}
+.face{display:flex;flex-direction:column;align-items:center;gap:6px;width:86px;padding:12px 6px 10px;border:1.5px solid var(--line);border-radius:18px;background:var(--card);cursor:pointer;font:inherit;font-size:13px;color:var(--muted);transition:transform .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease),color .2s var(--ease)}
+.face svg{transition:transform .25s var(--ease)}
+.face:hover{border-color:var(--brand);transform:translateY(-2px)}.face:hover svg{transform:scale(1.08)}
+.face.on{border-color:var(--brand);background:var(--brand-soft);color:var(--ink);font-weight:600}.face.on svg{transform:scale(1.14)}
+.sleep{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.sleep input[type=range]{flex:1;min-width:180px;accent-color:var(--brand);opacity:.45;transition:opacity .2s var(--ease)}
+.sleep input[type=range].set{opacity:1}
+.sleep b{min-width:86px;color:var(--ink)}
+.notice{background:var(--notice-bg);border:1px solid var(--notice-line);border-radius:14px;padding:12px 15px;font-size:14px;margin-bottom:15px;color:var(--notice-text)}
+.error{color:var(--danger);font-weight:600;min-height:22px;margin-top:8px}
+.crisis{border:1.5px solid var(--danger);background:var(--crisis-bg)}.crisis h3{color:var(--danger)}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px;margin-top:12px}
+.help>div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.help b{display:block;color:var(--ink)}.help .num{font-size:18px;font-weight:700;color:var(--brand)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.bar{display:grid;grid-template-columns:82px 1fr 46px;gap:10px;align-items:center;font-size:14px;margin:2px -8px;padding:5px 8px;border-radius:10px;transition:background .18s var(--ease)}
+.bar[tabindex]{cursor:help}.bar[tabindex]:hover{background:var(--tint)}
+.bar i{display:block;height:12px;border-radius:7px;width:0;transition:width .7s var(--ease)}
+.track{background:var(--tint);border-radius:7px;overflow:hidden}
+.cues{margin-top:10px;font-size:14px}.chip{display:inline-block;background:var(--brand-soft);color:var(--ink);border-radius:999px;padding:2px 11px;margin:2px 4px 2px 0;font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);transition:transform .2s var(--ease)}
+.tile:hover{transform:translateY(-2px)}
+.tile b{font-family:var(--display);display:block;font-size:28px;color:var(--ink);line-height:1.2;letter-spacing:-.5px}
+.tile span{font-size:13px;color:var(--muted)}
+.heatwrap{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.heatdays{display:grid;grid-template-rows:repeat(7,18px);gap:5px;font-size:11px;color:var(--muted);line-height:18px}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,18px);grid-auto-columns:18px;gap:5px}
+.cell{border-radius:6px;background:var(--tint);transition:transform .15s var(--ease)}
+.cell.day:hover{transform:scale(1.25)}.cell.future{background:transparent}
+.legend{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px}
+.breathe{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.orb-wrap{width:150px;height:150px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--tint)}
+.orb{width:136px;height:136px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--accent-soft),var(--brand-soft) 55%,var(--brand));transform:scale(.55);transition:transform 4s ease-in-out;opacity:.92}
+.orb.in,.orb.hold{transform:scale(1)}
+.orb-label{font-family:var(--display);font-size:20px;color:var(--ink);margin:6px 0 12px;min-height:30px}
+.entry{border-top:1px solid var(--line);padding:14px 0}.entry:first-child{border-top:0}
+.entry .meta{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+svg text{font:12px var(--sans);fill:var(--muted)}
+#tip{position:fixed;pointer-events:none;background:var(--tip-bg);color:var(--tip-text);padding:6px 10px;border-radius:9px;font-size:13px;max-width:280px;display:none;z-index:9}
+.hide{display:none}
+@media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}}
+@media (max-width:560px){main{padding:18px 13px 60px}.card{padding:18px}h2{font-size:23px}.face{width:calc(33% - 8px)}}
+</style>
+</head>
+<body>
+<header><h1>Mind<span>Log</span></h1><nav id="nav" class="hide"></nav><button id="theme" class="themebtn" type="button"></button></header>
+<main id="main"></main><div id="tip" role="tooltip"></div>
+<script>
+const EMO=["joy","anxiety","sadness","anger","neutral"], MOODS=[[1,"Very low"],[2,"Low"],[3,"Okay"],[4,"Good"],[5,"Very good"]];
+const NS="http://www.w3.org/2000/svg";
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue("--"+n).trim();
+let token=null, me=null, meta=null, view="write", theme="light";
+try{token=sessionStorage.getItem("mindlog_token")}catch(e){}
+try{theme=localStorage.getItem("mindlog_theme")||"light"}catch(e){}
+function h(tag,attrs,...kids){const e=document.createElement(tag);for(const k in attrs||{}){const v=attrs[k];if(k==="class")e.className=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?"":v)}
+  for(const c of kids.flat())if(c!=null&&c!==false)e.append(c.nodeType?c:document.createTextNode(c));return e}
+function sv(tag,attrs,...kids){const e=document.createElementNS(NS,tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);e.append(...kids);return e}
+async function api(path,method="GET",body){const r=await fetch(path,{method,headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})},body:body?JSON.stringify(body):undefined});
+  let d={};try{d=await r.json()}catch(e){}
+  if(r.status===401&&token&&!path.includes("login")&&!path.includes("account")){setToken(null);render();throw new Error("Session ended. Please log in again.")}
+  if(!r.ok){let m=d.detail;if(Array.isArray(m))m=m.map(x=>(x.loc||[]).slice(-1)[0]+": "+x.msg).join("; ");throw new Error(m||"Something went wrong.")}return d}
+function setToken(t){token=t;try{t?sessionStorage.setItem("mindlog_token",t):sessionStorage.removeItem("mindlog_token")}catch(e){}}
+const main=document.getElementById("main"), nav=document.getElementById("nav"), tip=document.getElementById("tip"), themeBtn=document.getElementById("theme");
+function applyTheme(){document.documentElement.dataset.theme=theme;themeBtn.textContent=theme==="dark"?"Light mode":"Dark mode"}
+themeBtn.onclick=()=>{theme=theme==="dark"?"light":"dark";try{localStorage.setItem("mindlog_theme",theme)}catch(e){}applyTheme();if(token&&view==="dashboard")render()};
+applyTheme();
+function showTip(x,y,text){tip.textContent=text;tip.style.display="block";tip.style.left=Math.max(8,Math.min(x+12,innerWidth-300))+"px";tip.style.top=Math.max(8,y-38)+"px"}
+function tipOn(el,textFn){el.addEventListener("mousemove",e=>showTip(e.clientX,e.clientY,textFn()));el.addEventListener("mouseleave",()=>tip.style.display="none");
+  el.addEventListener("focus",()=>{const b=el.getBoundingClientRect();showTip(b.left+20,b.top,textFn())});el.addEventListener("blur",()=>tip.style.display="none")}
+function helplines(list){return h("div",{class:"help"},list.map(x=>h("div",{},h("b",{},x.name),h("span",{class:"num"},x.contact),h("div",{class:"muted small"},x.hours))))}
+function fmtDate(s){return new Date(s).toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"})}
+function grow(root){requestAnimationFrame(()=>requestAnimationFrame(()=>root.querySelectorAll(".bar i[data-w]").forEach(i=>i.style.width=i.dataset.w)))}
+function face(v){const mouth={1:"M9 17.6c1.8-2.6 6.2-2.6 8 0",2:"M9.5 16.9c1.6-1.4 5.4-1.4 7 0",3:"M9.5 16.2h7",4:"M9.5 15.4c1.6 1.6 5.4 1.6 7 0",5:"M8.6 14.6c2 3.4 6.8 3.4 8.8 0"}[v],ink="#2a3a35";
+  return sv("svg",{viewBox:"0 0 26 26",width:38,height:38,"aria-hidden":"true"},sv("circle",{cx:13,cy:13,r:12,fill:css("m"+v)}),sv("circle",{cx:9.6,cy:10.6,r:1.3,fill:ink}),sv("circle",{cx:16.4,cy:10.6,r:1.3,fill:ink}),sv("path",{d:mouth,stroke:ink,"stroke-width":1.6,"stroke-linecap":"round",fill:"none"}))}
+
+function breathe(){
+  const orb=h("div",{class:"orb"}),label=h("div",{class:"orb-label","aria-live":"polite"},"Ready when you are"),btn=h("button",{class:"btn ghost",type:"button"},"Start breathing");
+  const phases=[["Breathe in",4,"in"],["Hold",4,"hold"],["Breathe out",6,"out"]];let timer=null,step=0;
+  const stop=()=>{clearTimeout(timer);timer=null;step=0;orb.className="orb";orb.style.transitionDuration="1.2s";label.textContent="Ready when you are";btn.textContent="Start breathing"};
+  const tick=()=>{if(!orb.isConnected)return stop();const [text,secs,cls]=phases[step%3];label.textContent=text+"…";orb.style.transitionDuration=secs+"s";orb.className="orb "+cls;step++;timer=setTimeout(tick,secs*1000)};
+  btn.onclick=()=>{if(timer)stop();else{btn.textContent="Stop";tick()}};
+  return h("div",{class:"breathe"},h("div",{class:"orb-wrap"},orb),h("div",{style:"flex:1;min-width:220px"},h("h3",{},"A minute to breathe"),
+    h("p",{class:"muted"},"In for 4, hold for 4, out for 6. Follow the circle for a few rounds, at your own pace."),label,btn));
+}
+
+async function render(){
+  if(!meta)meta=await api("/api/prompt");
+  main.classList.remove("enter");main.replaceChildren();tip.style.display="none";
+  if(!token){nav.classList.add("hide");auth()}
+  else{
+    try{me=await api("/api/me")}catch(e){return}
+    nav.classList.remove("hide");
+    nav.replaceChildren(...[["write","Write"],["history","History"],["dashboard","Dashboard"],["calm","Breathe"],["privacy","Privacy & settings"]].map(([k,l])=>h("button",{class:view===k?"on":"",onclick:()=>{if(view!==k){view=k;render()}}},l)),
+      h("button",{onclick:async()=>{try{await api("/api/logout","POST")}catch(e){}setToken(null);render()}},"Log out"));
+    await ({write,history,dashboard,calm,privacy})[view]();
+  }
+  void main.offsetWidth;main.classList.add("enter");grow(main);
+}
+
+function auth(){
+  let mode="login";const err=h("div",{class:"error"});
+  const user=h("input",{type:"text",autocomplete:"username"}),pass=h("input",{type:"password",autocomplete:"current-password"});
+  const c1=h("input",{type:"checkbox"}),c2=h("input",{type:"checkbox"});
+  const extra=h("div",{class:"hide"},
+    h("label",{class:"check"},c1,h("span",{},"I agree that MindLog stores my journal entries, mood ratings and results, encrypted, so it can show me my trends. I can export or delete everything at any time. (Required, Kenya Data Protection Act 2019.)")),
+    h("label",{class:"check"},c2,h("span",{},"Optional: when I correct a wrong emotion label, share that entry's text and my correction with the MindLog team to improve the model. These shared corrections are stored readable, not encrypted. I can switch this off later, which deletes them.")),
+    h("p",{class:"muted small"},"Your passphrase is the key to your journal. It is never stored, so it cannot be reset: if you forget it, your entries cannot be recovered."));
+  const go=h("button",{class:"btn"},"Log in"),swap=h("button",{class:"btn ghost"},"Create an account");
+  swap.onclick=()=>{mode=mode==="login"?"register":"login";extra.classList.toggle("hide");go.textContent=mode==="login"?"Log in":"Create account";swap.textContent=mode==="login"?"Create an account":"I already have an account";err.textContent=""};
+  go.onclick=async()=>{err.textContent="";go.disabled=true;try{
+      if(mode==="register"&&!c1.checked)throw new Error("Please tick the consent box to create an account.");
+      const d=await api(mode==="login"?"/api/login":"/api/register","POST",{username:user.value.trim(),passphrase:pass.value,consent:c1.checked,research_consent:c2.checked});
+      setToken(d.token);view="write";render()}catch(e){err.textContent=e.message}go.disabled=false};
+  main.append(h("div",{class:"card hero"},h("h2",{},"A private place to check in with yourself"),
+      h("p",{},"Write a few lines in English, Kiswahili or Sheng. MindLog names the emotion it reads, gives a short reflection and one coping tip, and shows your mood and sleep over time.")),
+    h("div",{class:"card"},h("div",{class:"notice"},meta.disclaimer),
+      h("label",{},"Username"),user,h("label",{},"Passphrase (at least 8 characters)"),pass,extra,err,h("div",{class:"row",style:"margin-top:6px"},go,swap)),
+    h("div",{class:"card"},h("h3",{},"Need to talk to someone now?"),helplines(meta.helplines)));
+}
+
+function write(){
+  let mood=null,sleep=null,tags=new Set(),lang="auto";const err=h("div",{class:"error"}),out=h("div",{});
+  const ta=h("textarea",{placeholder:"Andika hapa / Write here…",maxlength:5000});
+  const moodRow=h("div",{class:"faces"},MOODS.map(([v,l])=>h("button",{class:"face",type:"button","aria-label":"Mood "+v+" of 5, "+l,onclick:e=>{mood=v;[...moodRow.children].forEach(b=>b.classList.remove("on"));e.currentTarget.classList.add("on")}},face(v),l)));
+  const sleepOut=h("b",{},"Not logged");
+  const range=h("input",{type:"range",min:0,max:12,step:0.5,value:7,"aria-label":"Hours of sleep last night"});
+  range.addEventListener("input",()=>{sleep=+range.value;sleepOut.textContent=sleep+(sleep===1?" hour":" hours");range.classList.add("set")});
+  const clear=h("button",{class:"link",type:"button",onclick:()=>{sleep=null;sleepOut.textContent="Not logged";range.classList.remove("set")}},"Clear");
+  const tagRow=h("div",{class:"row"},meta.tags.map(t=>h("button",{class:"pill",type:"button",onclick:e=>{tags.has(t)?tags.delete(t):tags.add(t);e.currentTarget.classList.toggle("on")}},t)));
+  const habit=me.habit?h("input",{type:"checkbox"}):null;
+  const sel=h("select",{style:"max-width:260px",onchange:e=>lang=e.target.value},[["auto","Reply in the language I write in"],["English","Always reply in English"],["Kiswahili","Jibu kwa Kiswahili kila mara"]].map(([v,l])=>h("option",{value:v},l)));
+  const save=h("button",{class:"btn"},"Save entry");
+  save.onclick=async()=>{err.textContent="";if(ta.value.trim().length<3)return err.textContent="Write at least a few words first.";if(!mood)return err.textContent="Pick a mood rating.";
+    save.disabled=true;try{const r=await api("/api/entries","POST",{text:ta.value.trim(),mood,tags:[...tags],habit_done:habit?habit.checked:null,sleep_hours:sleep,reply_language:lang});
+      const res=result(r);out.replaceChildren(res);grow(res);ta.value="";out.scrollIntoView({behavior:"smooth"})}catch(e){err.textContent=e.message}save.disabled=false};
+  main.append(h("div",{class:"card"},h("h2",{},"Today's check-in"),h("p",{},h("b",{},meta.en)," ",h("span",{class:"muted"},meta.sw)),ta,
+    h("label",{},"How was your mood today?"),moodRow,
+    h("label",{},"How long did you sleep last night? (optional)"),h("div",{class:"sleep"},range,sleepOut,clear),
+    h("label",{},"What was it about? (optional)"),tagRow,
+    habit?h("label",{class:"check"},habit,h("span",{},"I kept my habit today: ",h("b",{},me.habit))):null,
+    h("label",{},"Reply language"),sel,err,h("div",{class:"row",style:"margin-top:8px"},save)),out);
+}
+
+function result(r){
+  const box=h("div",{});
+  if(r.support_level==="crisis"){box.append(h("div",{class:"card crisis"},h("h3",{},"You do not have to carry this alone"),h("p",{},r.support_message),helplines(r.helplines),
+      h("p",{class:"muted small",style:"margin-top:12px"},"Your entry has been saved privately. MindLog has not contacted anyone.")),
+      h("div",{class:"card"},breathe()));return box}
+  const refl=h("p",{},r.reflection),tipEl=h("p",{},h("b",{},"Try this: "),r.coping_tip),label=h("b",{},r.emotion),note=h("p",{class:"muted small"});
+  const fix=h("div",{class:"row"},EMO.map(e=>h("button",{class:"pill"+(e===r.emotion?" on":""),type:"button",onclick:async ev=>{const btn=ev.currentTarget;try{const c=await api(`/api/entries/${r.id}/correct`,"POST",{emotion:e});
+      [...fix.children].forEach(b=>b.classList.remove("on"));btn.classList.add("on");label.textContent=e;refl.textContent=c.reflection;tipEl.replaceChildren(h("b",{},"Try this: "),c.coping_tip);
+      note.textContent=c.user_corrected?("Thanks. Your dashboard now uses “"+e+"”."+(c.shared_for_retraining?" The correction was shared to improve the model.":" The correction stays private (sharing is off).")):"Back to the original label."}catch(x){note.textContent=x.message}}},h("span",{class:"dot",style:"background:"+css(e)}),e)));
+  const cw=r.cue_words||{},mine=cw[r.emotion]||[];
+  const why=e=>e==="neutral"?"Neutral has no cue list. It is the label when no other emotion stands out.":(cw[e]||[]).length?"Cue words spotted for "+e+": "+cw[e].join(", "):"No "+e+" cue words spotted in this entry.";
+  box.append(h("div",{class:"card"},h("h3",{},"What MindLog read"),
+    h("p",{},"This entry reads as ",h("i",{},r.confidence_word)," ",h("span",{class:"dot",style:"background:"+css(r.emotion)}),label,", written in ",r.language,"."),
+    EMO.map(e=>{const row=h("div",{class:"bar",tabindex:0},h("span",{},e),h("div",{class:"track"},h("i",{"data-w":Math.round(r.probabilities[e]*100)+"%",style:"background:"+css(e)})),h("span",{},""));tipOn(row,()=>why(e));return row}),
+    h("p",{class:"cues"},mine.length?["Cue words MindLog spotted: ",...mine.map(w=>h("span",{class:"chip"},w))]:"No cue words from the shared English, Kiswahili and Sheng list in this entry, so the model went by its word and letter patterns."),
+    h("p",{class:"muted small"},"Hover or tab to a bar to see the cue words behind it. Cue words are one of the signals the model uses, not the whole story. Bars are estimates, not certainties: the model has not been tested on real students' writing yet."),
+    h("div",{class:"bar",style:"margin-top:10px"},h("span",{},"stress"),h("div",{class:"track"},h("i",{"data-w":Math.round(r.stress_score*100)+"%",style:"background:"+css("muted")})),h("span",{},r.stress_score.toFixed(2))),
+    r.please_check_label?h("div",{class:"notice",style:"margin-top:12px"},"MindLog is not sure about this one. If the label is wrong, please correct it below."):null,
+    h("h3",{style:"margin-top:16px"},"Reflection"),refl,tipEl,
+    h("label",{},"Not right? Tell MindLog what you felt"),fix,note));
+  if(r.support_level==="elevated")box.append(h("div",{class:"card"},h("h3",{},"Extra support"),h("p",{},r.support_message),helplines(r.helplines)),h("div",{class:"card"},breathe()));
+  return box;
+}
+
+async function history(){
+  const list=await api("/api/entries");const card=h("div",{class:"card"},h("h2",{},"Your entries"));
+  if(!list.length)card.append(h("p",{class:"muted"},"Nothing yet. Your entries will appear here, newest first."));
+  for(const e of list){const row=h("div",{class:"entry"},h("div",{class:"meta"},h("b",{},fmtDate(e.created_at)),h("span",{},"mood "+e.mood+"/5"),
+      h("span",{},h("span",{class:"dot",style:"background:"+css(e.emotion_final)}),e.emotion_final+(e.user_corrected?" (corrected from "+e.emotion_predicted+")":"")),h("span",{},"stress "+e.stress_score.toFixed(2)),
+      e.sleep_hours!=null?h("span",{},"slept "+e.sleep_hours+" h"):null,
+      e.tags.length?h("span",{},e.tags.join(", ")):null,e.demo?h("span",{},"sample entry"):null,
+      h("button",{class:"pill small",style:"margin-left:auto",onclick:async()=>{if(confirm("Delete this entry permanently?")){await api("/api/entries/"+e.id,"DELETE");render()}}},"Delete")),h("div",{},e.text));card.append(row)}
+  main.append(card);
+}
+
+function chart(series,key,lo,hi,color,title,ticks,threshold){
+  const W=860,H=190,L=34,R=12,T=14,B=26,svg=sv("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":title});
+  const S=(t,a)=>{const e=sv(t,a);svg.append(e);return e};
+  const day=s=>Math.round(new Date(s+"T00:00:00").getTime()/864e5),d0=day(series[0].date),d1=Math.max(day(series[series.length-1].date),d0+6);
+  const x=d=>L+(W-L-R)*(day(d)-d0)/(d1-d0),y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  for(const t of ticks){S("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),stroke:css("line")});S("text",{x:L-8,y:y(t)+4,"text-anchor":"end"}).textContent=t}
+  if(threshold!=null){S("line",{x1:L,x2:W-R,y1:y(threshold),y2:y(threshold),stroke:css("danger"),"stroke-dasharray":"5 4"})}
+  const step=Math.max(1,Math.ceil((d1-d0)/8));for(let d=d0;d<=d1;d+=step){const dt=new Date(d*864e5);S("text",{x:L+(W-L-R)*(d-d0)/(d1-d0),y:H-6,"text-anchor":d+step>d1&&d>d0?"end":d===d0?"start":"middle"}).textContent=dt.toLocaleDateString(undefined,{day:"numeric",month:"short"})}
+  let path="";series.forEach((p,i)=>{const gap=i===0||day(p.date)-day(series[i-1].date)>1;path+=(gap?"M":"L")+x(p.date).toFixed(1)+" "+y(p[key]).toFixed(1)+" "});
+  S("path",{d:path,fill:"none",stroke:color,"stroke-width":2,"stroke-linejoin":"round"});
+  for(const p of series){S("circle",{cx:x(p.date),cy:y(p[key]),r:4.5,fill:color,stroke:css("card"),"stroke-width":2});const hit=S("circle",{cx:x(p.date),cy:y(p[key]),r:12,fill:"transparent"});
+    hit.addEventListener("mousemove",e=>showTip(e.clientX,e.clientY,fmtDate(p.date)+": "+title.split(" (")[0].toLowerCase()+" "+p[key]));hit.addEventListener("mouseleave",()=>tip.style.display="none")}
+  return h("div",{},h("h3",{},title),svg);
+}
+
+function heatmap(series){
+  const WEEKS=12,by=Object.fromEntries(series.map(p=>[p.date,p])),pad=n=>String(n).padStart(2,"0");
+  const today=new Date();today.setHours(0,0,0,0);const start=new Date(today);start.setDate(today.getDate()-((today.getDay()+6)%7)-(WEEKS-1)*7);
+  const grid=h("div",{class:"heat",role:"img","aria-label":"Calendar of your mood on each day of the last "+WEEKS+" weeks"});
+  for(let i=0;i<WEEKS*7;i++){const d=new Date(start);d.setDate(start.getDate()+i);
+    if(d>today){grid.append(h("div",{class:"cell future"}));continue}
+    const key=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()),p=by[key];
+    const cell=h("div",{class:"cell day",tabindex:0,style:p?"background:var(--m"+Math.min(5,Math.max(1,Math.round(p.mood)))+")":null});
+    tipOn(cell,()=>fmtDate(d)+(p?": mood "+p.mood+" of 5, "+p.entries+(p.entries===1?" entry":" entries")+(p.sleep!=null?", slept "+p.sleep+" h":""):": no entry"));grid.append(cell)}
+  return h("div",{},h("h3",{},"Your mood calendar"),
+    h("div",{class:"heatwrap"},h("div",{class:"heatdays"},["Mon","","Wed","","Fri","","Sun"].map(t=>h("span",{},t))),grid),
+    h("div",{class:"legend"},h("span",{},"Low mood"),[1,2,3,4,5].map(v=>h("i",{style:"background:var(--m"+v+")",title:"Mood "+v})),h("span",{},"High mood"),h("i",{style:"background:var(--tint);margin-left:12px"}),h("span",{},"No entry")),
+    h("p",{class:"muted small",style:"margin-top:8px"},"Each square is one day, coloured by the mood you gave it. Hover or tab to a square for the details."));
+}
+
+async function dashboard(){
+  const d=await api("/api/dashboard");
+  const sample=()=>h("button",{class:"btn ghost",onclick:async e=>{e.target.disabled=true;e.target.textContent="Loading…";await api("/api/demo","POST");render()}},"Load sample month");
+  if(!d.total_entries){main.append(h("div",{class:"card"},h("h2",{},"Your dashboard"),h("p",{},"Trends appear after your first few entries."),
+      h("p",{class:"muted"},"For a demonstration you can load 24 sample entries spread over the last 30 days. They are marked as samples, their sleep hours are made up, and you can delete them."),sample()));return}
+  const trend=d.median_mood_last_7_days==null?"–":d.median_mood_last_7_days,was=d.median_mood_previous_7_days==null?"":", was "+d.median_mood_previous_7_days+" the week before",s=d.sleep;
+  main.append(h("div",{class:"tiles"},
+    h("div",{class:"tile"},h("b",{},d.current_streak+(d.current_streak===1?" day":" days")),h("span",{},"current streak, longest "+d.longest_streak)),
+    h("div",{class:"tile"},h("b",{},d.this_week+" / "+d.weekly_goal),h("span",{},d.goal_met?"weekly goal reached":"entries this week vs goal")),
+    h("div",{class:"tile"},h("b",{},trend),h("span",{},"median mood, last 7 days"+was)),
+    h("div",{class:"tile"},h("b",{},s.avg_last_7_days==null?"–":s.avg_last_7_days+" h"),h("span",{},"average sleep, last 7 days")),
+    h("div",{class:"tile"},h("b",{},d.total_entries),h("span",{},"entries on "+d.days_written+" days"+(d.habit_rate!=null?", habit kept "+Math.round(d.habit_rate*100)+"%":"")))),
+   h("div",{class:"card"},heatmap(d.series)),
+   h("div",{class:"card"},chart(d.series,"mood",1,5,css("joy"),"Mood (1–5, your own rating)",[1,2,3,4,5]),chart(d.series,"stress",0,1,css("anxiety"),"Stress score (0–1, from the model)",[0,0.25,0.5,0.75,1],0.85),
+     h("p",{class:"muted small"},"Lines break on days with no entry. The dashed line marks 0.85, where MindLog offers extra support if your mood is also low.")));
+  const slept=d.series.filter(p=>p.sleep!=null);
+  main.append(h("div",{class:"card"},slept.length>=2?chart(slept,"sleep",0,12,css("sadness"),"Sleep (hours, your own log)",[0,3,6,9,12]):h("h3",{},"Sleep"),
+    s.median_mood_rested!=null&&s.median_mood_short!=null
+      ?h("p",{},"After 7 or more hours of sleep, your median mood was ",h("b",{},s.median_mood_rested)," ("+s.rested_nights+" entries). After under 6 hours, it was ",h("b",{},s.median_mood_short)," ("+s.short_nights+" entries).")
+      :h("p",{class:"muted"},s.logged?"Keep logging your sleep. MindLog compares your mood after short nights (under 6 hours) and longer ones (7 or more) once it has at least 3 of each.":"Log last night's sleep when you write an entry and it will show up here next to your mood."),
+    h("p",{class:"muted small"},"A pattern to reflect on, not a diagnosis. Sleep and mood can affect each other in both directions.")));
+  const max=Math.max(...Object.values(d.emotion_counts),1);
+  main.append(h("div",{class:"card"},h("h3",{},"Emotions across your entries"),EMO.map(e=>h("div",{class:"bar"},h("span",{},e),h("div",{class:"track"},h("i",{"data-w":100*d.emotion_counts[e]/max+"%",style:"background:"+css(e)})),h("span",{},d.emotion_counts[e]))),
+    h("p",{class:"muted small",style:"margin-top:8px"},"Uses your corrected labels where you changed them ("+d.corrections+" corrected).")));
+  if(d.total_entries<5)main.append(h("div",{class:"card"},h("h3",{},"Want to see a fuller dashboard?"),h("p",{class:"muted"},"Load 24 sample entries spread over the last 30 days. They are marked as samples, their sleep hours are made up, and you can delete them."),sample()));
+  if(d.tags.length)main.append(h("div",{class:"card"},h("h3",{},"What your low days are about"),h("table",{},h("tr",{},h("th",{},"Tag"),h("th",{},"Entries"),h("th",{},"Median mood")),d.tags.map(t=>h("tr",{},h("td",{},t.tag),h("td",{},t.entries),h("td",{},t.median_mood)))),
+    h("p",{class:"muted small",style:"margin-top:8px"},"Sorted from lowest median mood. A pattern here is a prompt to reflect, not a diagnosis.")));
+}
+
+function calm(){
+  main.append(h("div",{class:"card"},h("h2",{},"Take a slow minute"),breathe()),
+    h("div",{class:"card"},h("h3",{},"If things feel too heavy"),h("p",{class:"muted"},"Breathing can steady a hard moment, but it does not replace talking to someone."),helplines(meta.helplines)));
+}
+
+function privacy(){
+  const goal=h("input",{type:"number",min:1,max:14,value:me.weekly_goal,style:"max-width:120px"}),habit=h("input",{type:"text",maxlength:120,value:me.habit,placeholder:"e.g. Sleep by 11pm / Kulala kabla ya saa tano"});
+  const share=h("input",{type:"checkbox"});share.checked=me.research_consent;const msg=h("div",{class:"muted",style:"min-height:22px"}),pass=h("input",{type:"password",placeholder:"Your passphrase",style:"max-width:280px"}),err=h("div",{class:"error"});
+  main.append(h("div",{class:"card"},h("h2",{},"Goals"),h("label",{},"Entries I want to write each week"),goal,h("label",{},"One habit I am building"),habit,
+      h("label",{class:"check"},share,h("span",{},"Share my label corrections (entry text + corrected label, stored readable) to improve the model. Switching this off deletes what was shared.")),
+      h("div",{class:"row"},h("button",{class:"btn",onclick:async()=>{try{me=await api("/api/settings","PUT",{weekly_goal:+goal.value,habit:habit.value.trim(),research_consent:share.checked});msg.textContent="Saved."}catch(e){msg.textContent=e.message}}},"Save"),msg)),
+    h("div",{class:"card"},h("h2",{},"Your data"),h("p",{},"Signed in as ",h("b",{},me.username),". Consent given on "+me.consent_at.replace("T"," at ")+"."),
+      h("p",{class:"muted"},"Every entry (text, mood, sleep, tags, labels and scores) is encrypted with AES-256 using a key made from your passphrase. The key is held in memory only while you are logged in. The database stores the encrypted entry and its timestamp."),
+      h("div",{class:"row"},h("button",{class:"btn ghost",onclick:async()=>{const d=await api("/api/export");const a=h("a",{href:URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"})),download:"mindlog_export.json"});document.body.append(a);a.click();a.remove()}},"Download my data"))),
+    h("div",{class:"card"},h("h2",{},"Delete my account"),h("p",{},"This permanently removes your account, every entry and any shared corrections. It cannot be undone."),
+      h("div",{class:"row"},pass,h("button",{class:"btn danger",onclick:async()=>{err.textContent="";if(!confirm("Delete your account and all entries permanently?"))return;try{await api("/api/account","DELETE",{passphrase:pass.value});setToken(null);render()}catch(e){err.textContent=e.message}}},"Delete everything")),err),
+    h("div",{class:"card"},h("h3",{},"Support"),h("div",{class:"notice"},meta.disclaimer),helplines(meta.helplines)));
+}
+render().catch(e=>{main.textContent="Could not reach the MindLog server: "+e.message});
+</script>
+</body>
+</html>
